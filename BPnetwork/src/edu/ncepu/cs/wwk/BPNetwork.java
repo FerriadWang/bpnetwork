@@ -1,60 +1,32 @@
 package edu.ncepu.cs.wwk;
 
 import java.util.Random;
-
 /**
- * <p>BP神经网络</p>
+ * <p>BPNetwork</p>
  * <p>Description: </p>
- * <p>利用梯度下降法训练输入样本，
- * 调节连接权重</p>
- * <p>Company: </p>
- * @author xuwei
- * @version 1.0
+ * <p>train the sample data with SGD，
+ * adjust the connect weight</p>
+ * <p>Institute: North China Electric Power U</p>
+ * @author Weikang Wang
+ * @version 1.1
  */
-public class bp_network extends Object {
-    int inNum; //输入接点数
-    int hideNum; //隐含接点数
-    int outNum; //输出接点数
-    Random R;
-    int epochs;//迭代期数
-
-    double input[]; //输入向量
-    double hidden[]; //隐含接点状态值
-    double output[]; //输出接点状态值
-    double o1[];//暂存第一层输出值
-    double o2[];//暂存第二层输出值
-    double w_ih[][]; //隐含接点权值
-    double w_ho[][]; //输出接点权值
-    double rate_w; //权值学习率（输入层-隐含层)
-    double rate_w1; //权值学习率 (隐含层-输出层)
-    double rate_b1; //隐含层阀值学习率
-    double rate_b2; //输出层阀值学习率
-    double b1[]; //隐含接点阀值
-    double b2[]; //输出接点阀值
-    double correct_ih[];//输入层的隐含层的调整值
-    double correct_ho[];//隐含层和输出层的调整值
-    double yd[];
-    double e;
-    double de;
-    double in_rate; //输入归一化比例系数
-    double out_rate;//输出归一化比例系数
-    
-    public bp_network(int inNum, int hideNum, int outNum) {
+public class BPNetwork extends Object {
+	
+    public BPNetwork(BPConfig cf) {
         R = new Random();
-        this.epochs = 500;
-        this.inNum = inNum;
-        this.hideNum = hideNum;
-        this.outNum = outNum;
-        input = new double[inNum]; //输入向量
-        hidden = new double[hideNum]; //隐含接点状态值
-        output = new double[outNum]; //输出接点状态值
-
+        this.epochs = cf.getEpochs();
+        int inNum = cf.getInNum();
+        int hideNum = cf.getHideNum();
+        int outNum = cf.getOutNum();
+        input = new double[inNum]; 
+        hidden = new double[hideNum]; 
+        output = new double[outNum]; 
         o1 = new double[hideNum];
         o2 = new double[outNum];
-        w_ih = new double[inNum][hideNum]; //隐含接点权值
-        w_ho = new double[hideNum][outNum]; //输出接点权值
-        b1 = new double[hideNum]; //隐含接点阀值
-        b2 = new double[outNum]; //输出接点阀值
+        w_ih = new double[inNum][hideNum]; 
+        w_ho = new double[hideNum][outNum]; 
+        b1 = new double[hideNum]; 
+        b2 = new double[outNum];
         correct_ih = new double[hideNum];
         correct_ho = new double[outNum];
         yd = new double[outNum];
@@ -69,13 +41,11 @@ public class bp_network extends Object {
                 w_ho[i][j] = R.nextDouble();
             }
         }
-        rate_w = 0.08; //权值学习率（输入层-隐含层)
-        rate_w1 = 0.08; //权值学习率 (隐含层-输出层)
-        rate_b1 = 0.05; //隐含层阀值学习率
-        rate_b2 = 0.05; //输出层阀值学习率
-        e = 0.0;
-        de = 0;
-        in_rate = 1.0; //输入归一化系数
+        rate_w = cf.getRate_w(); 
+        rate_w1 = cf.getRate_w1(); 
+        rate_b1 = cf.getRate_b1(); 
+        rate_b2 = cf.getRate_b2(); 
+        e = cf.getE();
     }
     /*double p[][];
     double t[][];
@@ -175,7 +145,7 @@ public class bp_network extends Object {
     } //end train
 
     /***************************************/
-    /*****BP神经控制器算法模拟计算函数*****/
+    /*****BP神经控制器算法模拟计算函数*******/
     public double[] sim(double psim[]) {
         for (int i = 0; i < inNum; i++) {
             input[i] = psim[i] / in_rate;
@@ -198,32 +168,29 @@ public class bp_network extends Object {
         }
         return output;
     } //end sim
-    public int getInNum() {
-		return inNum;
-	}
-	public void setInNum(int inNum) {
-		this.inNum = inNum;
-	}
-	public int getHideNum() {
-		return hideNum;
-	}
-	public void setHideNum(int hideNum) {
-		this.hideNum = hideNum;
-	}
-	public int getOutNum() {
-		return outNum;
-	}
-	public void setOutNum(int outNum) {
-		this.outNum = outNum;
-	}
-	public int getEpochs() {
-		return epochs;
-	}
-	public void setEpochs(int epochs) {
-		this.epochs = epochs;
-	}
-	
-
-	
+    double input[]; //输入向量
+	double hidden[]; //隐含接点状态值
+	double output[]; //输出接点状态值
+	double o1[];//暂存第一层输出值
+	double o2[];//暂存第二层输出值
+	double w_ih[][]; //隐含接点权值
+	double w_ho[][]; //输出接点权值
+	double b1[]; //隐含接点阀值
+    double b2[]; //输出接点阀值
+    double correct_ih[];//输入层的隐含层的调整值
+    double correct_ho[];//隐含层和输出层的调整值
+    double yd[];
+    double rate_w; //权值学习率（输入层-隐含层)
+    double rate_w1; //权值学习率 (隐含层-输出层)
+    double rate_b1; //隐含层阀值学习率
+    double rate_b2; //输出层阀值学习率
+    double e;
+    double in_rate; //输入归一化比例系数
+    double out_rate;//输出归一化比例系数
+    int epochs;//迭代期数
+    int inNum; //输入接点数
+	int hideNum; //隐含接点数
+	int outNum; //输出接点数
+    Random R;
 } //end bp class
 
