@@ -8,36 +8,53 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class BPData {
-	private ArrayList<double[]> dataList;
-	private double [][]data;
+	private ArrayList<double[]> pDataList;
+	private ArrayList<Double> tDataList;
+	private double [][] pdata;
+	private double [][] tdata;
 	public BPData() {
 		super();
+		pDataList = new ArrayList<double[]>();
+		tDataList = new ArrayList<Double>();
 		// TODO Auto-generated constructor stub
 	}
 	
 	/**
-	 * <p>This is a method of BPData class. It reads data by two ways:</p>
-	 * <p>type = 0 ---> read data from a file whose URL is url.</p>
-	 * <p>type = 1 ---> read data from a directory whose URL is url.</p>
+	 * <br>This is a method of BPData class. It reads pdata by two ways:</br>
+	 * <br>type = 0 ---> read pdata from a file whose URL is url.</br>
+	 * <br>type = 1 ---> read pdata from a directory whose URL is url.</br>
+	 * <br>After the data are read, they are stored in pdata and tdata</br>
+	 * <br>User can use getter method to obtain pdat aand tdata</br>
 	 * @author Ferriad*/
-	public double[][] readData(String url,int type){
-		
+	public int readData(String url,int type){
+		int flag = 0;
 		//File dataFilePackage = new File(".\\rawdata\\");
-		
 		if(type==0){
 			File file = new File(url);
-			readTxtFile(file);
-		}else{
+			flag = readTxtFile(file);
+		}else if(type==1){
 			File dataFilePackage = new File(url);
 			File[] dataFiles = dataFilePackage.listFiles();
 			for(File file: dataFiles){
-			readTxtFile(file);
+			flag = readTxtFile(file);
 			}
 		}
-		data = (double[][]) dataList.toArray();
-		return data;		
+		pdata = new double[pDataList.size()][];
+		for(int i = 0; i < pdata.length; i++){
+			pdata[i]=pDataList.get(i);
+		}
+		tdata = new double[tDataList.size()][1];
+		for(int i = 0; i < tdata.length; i++){
+			tdata[i][0]=tDataList.get(i);
+		}
+		//pdata = (double[][]) pDataList.toArray();
+		System.out.println(pdata.length);
+		System.out.println(tdata.length);
+		return flag;		
 	}
-	private ArrayList<double[]> readTxtFile(File file) {
+	
+	@SuppressWarnings("resource")
+	private int readTxtFile(File file) {
 		// TODO Auto-generated method stub
 		FileReader fileReader = null;
 		BufferedReader br = null;
@@ -45,22 +62,38 @@ public class BPData {
 		try {
 			fileReader=new FileReader(file);
 			br=new BufferedReader(fileReader);
+			br.readLine();
 			while((dataLine=br.readLine())!=null){
 				String[] strTemp = dataLine.split(",");
-				double[] dataTemp = new double[strTemp.length];
+				double[] pDataTemp = new double[strTemp.length-1];
+				double tDataTemp = 0.00;
 				for(int i=0;i<strTemp.length;i++){  
-				    dataTemp[i]=Integer.parseInt(strTemp[i]);
+				    if(i<strTemp.length-1){
+				    	pDataTemp[i]=Double.parseDouble(strTemp[i]);
+					}else{
+						tDataTemp=Double.parseDouble(strTemp[i]);	
+					}
 				}
-				dataList.add(dataTemp);
+				pDataList.add(pDataTemp);
+				tDataList.add(tDataTemp);
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return 1;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return 2;
 		} 
-		return dataList;
+		return 0;
+	}
+	
+	public double[][] getPdata() {
+		return pdata;
 	}
 
+	public double[][] getTdata() {
+		return tdata;
+	}
 }
