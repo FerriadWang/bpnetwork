@@ -21,10 +21,13 @@ public class BPData {
 	
 	/**
 	 * <br>This is a method of BPData class. It reads pdata by two ways:</br>
-	 * <br>type = 0 ---> read pdata from a file whose URL is url.</br>
-	 * <br>type = 1 ---> read pdata from a directory whose URL is url.</br>
+	 * <br><b>type = 0</b> ---> read pdata from a file whose URL is url.</br>
+	 * <br><b>type = 1</b> ---> read pdata from a directory whose URL is url.</br>
 	 * <br>After the data are read, they are stored in pdata and tdata</br>
 	 * <br>User can use getter method to obtain pdat aand tdata</br>
+	 * <p><b>Returns</b></p>
+	 * <p>0: training success</p>
+	 * <p>x: training failed</p>
 	 * @author Ferriad*/
 	public int readData(String url,int type){
 		int flag = 0;
@@ -65,17 +68,21 @@ public class BPData {
 			br.readLine();
 			while((dataLine=br.readLine())!=null){
 				String[] strTemp = dataLine.split(",");
-				double[] pDataTemp = new double[strTemp.length-1];
+				double[] pDataTemp = new double[strTemp.length-3];
 				double tDataTemp = 0.00;
-				for(int i=0;i<strTemp.length;i++){  
-				    if(i<strTemp.length-1){
-				    	pDataTemp[i]=Double.parseDouble(strTemp[i]);
-					}else{
+				int j = 0;
+				for(int i=0;i<strTemp.length;i++){
+					if(i<strTemp.length-2&&i!=1){
+				    	pDataTemp[j]=Double.parseDouble(strTemp[i]);
+				    	j++;
+					}else if(i==strTemp.length-1){
 						tDataTemp=Double.parseDouble(strTemp[i]);	
 					}
 				}
+				if(tDataTemp!=0.00){
 				pDataList.add(pDataTemp);
 				tDataList.add(tDataTemp);
+				}
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block

@@ -7,6 +7,12 @@ public class BPConfig {
 	public int getInNum() {
 		return inNum;
 	}
+	/**
+	 * <p>public BPConfig(int inNum, int hideNum, int outNum)</p>
+	 * <p><b>inNum</b>: input layer node number</p>
+	 * <p><b>hideNum</b>: hide layer node number</p>
+	 * <p><b>inNum</b>: output layer node number</p>
+	 * <p><b>ephochs</b>: output layer node number</p>*/
 	public BPConfig(int inNum, int hideNum, int outNum, int epochs) {
 		super();
 		this.inNum = inNum;
@@ -19,16 +25,22 @@ public class BPConfig {
 		this.rate_b2 = 0.05; //输出层阀值学习率
 		this.e = 0.00;
 	}
+	
+	/**
+	 * <p>public BPConfig(int inNum, int hideNum, int outNum)</p>
+	 * <p><b>inNum</b>: input layer node number</p>
+	 * <p><b>hideNum</b>: hide layer node number</p>
+	 * <p><b>inNum</b>: output layer node number</p>*/
 	public BPConfig(int inNum, int hideNum, int outNum) {
 		super();
 		this.inNum = inNum;
 		this.hideNum = hideNum;
 		this.outNum = outNum;
 		this.epochs = 500;
-		this.rate_w = 0.08; //权值学习率（输入层-隐含层)
-		this.rate_w1 = 0.08; //权值学习率 (隐含层-输出层)
-		this.rate_b1 = 0.05; //隐含层阀值学习率
-		this.rate_b2 = 0.05; //输出层阀值学习率
+		this.rate_w = 0.01; //权值学习率（输入层-隐含层)
+		this.rate_w1 = 0.01; //权值学习率 (隐含层-输出层)
+		this.rate_b1 = 0.02; //隐含层阀值学习率
+		this.rate_b2 = 0.02; //输出层阀值学习率
 		this.e = 0.00;
 	}
 	public void setInNum(int inNum) {

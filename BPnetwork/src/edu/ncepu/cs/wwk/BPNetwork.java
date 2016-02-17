@@ -18,18 +18,21 @@ public class BPNetwork extends Object {
         int inNum = cf.getInNum();
         int hideNum = cf.getHideNum();
         int outNum = cf.getOutNum();
-        input = new double[inNum]; 
-        hidden = new double[hideNum]; 
-        output = new double[outNum]; 
-        o1 = new double[hideNum];
-        o2 = new double[outNum];
-        w_ih = new double[inNum][hideNum]; 
-        w_ho = new double[hideNum][outNum]; 
-        b1 = new double[hideNum]; 
-        b2 = new double[outNum];
-        correct_ih = new double[hideNum];
-        correct_ho = new double[outNum];
-        yd = new double[outNum];
+        this.inNum = inNum;
+        this.hideNum = hideNum;
+        this.outNum = outNum;
+        this.input = new double[inNum]; 
+        this.hidden = new double[hideNum]; 
+        this.output = new double[outNum]; 
+        this.o1 = new double[hideNum];
+        this.o2 = new double[outNum];
+        this. w_ih = new double[inNum][hideNum]; 
+        this.w_ho = new double[hideNum][outNum]; 
+        this.b1 = new double[hideNum]; 
+        this.b2 = new double[outNum];
+        this.correct_ih = new double[hideNum];
+        this.correct_ho = new double[outNum];
+        this.yd = new double[outNum];
 
         for (int i = 0; i < inNum; i++) {
             for (int j = 0; j < hideNum; j++) {
@@ -113,8 +116,9 @@ public class BPNetwork extends Object {
 
             //System.out.println("ok1");
             //update hidden layer weights
+            //fixed problems
             for (int k = 0; k < outNum; k++) {
-                correct_ho[k] = (yd[k] - output[k]) * output[k] * (1. - output[k]);
+                correct_ho[k] = output[k] * (yd[k] - output[k]) * output[k] * (1. - output[k]);
                 //correct_ho[k]=(yd[k]-output[k]);
                 //e+=Math.abs(yd[k]-output[k])*Math.abs(yd[k]-output[k]);//计算均方差
                 for (int j = 0; j < hideNum; j++) {
@@ -125,7 +129,7 @@ public class BPNetwork extends Object {
             for (int j = 0; j < hideNum; j++) {
                 correct_ih[j] = 0.0;
                 for (int k = 0; k < outNum; k++) {
-                    correct_ih[j] = correct_ih[j] + correct_ho[k] * w_ho[j][k];
+                    correct_ih[j] = correct_ih[j] + correct_ho[k] / output[k] * w_ho[j][k];
                 }
                 correct_ih[j] = correct_ih[j] * hidden[j] * (1. - hidden[j]);
                 for (int i = 0; i < inNum; i++) {
@@ -164,22 +168,22 @@ public class BPNetwork extends Object {
             }
             output[k] = 1.0 / (1.0 + Math.exp( -o2[k] - b2[k]));
             //output[k]=o2[k]-b2[k];
-            output[k] = in_rate * output[k];
+            output[k] = out_rate * output[k];
         }
         return output;
     } //end sim
-    double input[]; //输入向量
-	double hidden[]; //隐含接点状态值
-	double output[]; //输出接点状态值
-	double o1[];//暂存第一层输出值
-	double o2[];//暂存第二层输出值
+    private double input[]; //输入向量
+	private double hidden[]; //隐含接点状态值
+	private double output[]; //输出接点状态值
+	private double o1[];//暂存第一层输出值
+	private double o2[];//暂存第二层输出值
 	double w_ih[][]; //隐含接点权值
 	double w_ho[][]; //输出接点权值
-	double b1[]; //隐含接点阀值
-    double b2[]; //输出接点阀值
-    double correct_ih[];//输入层的隐含层的调整值
-    double correct_ho[];//隐含层和输出层的调整值
-    double yd[];
+	private double b1[]; //隐含接点阀值
+    private double b2[]; //输出接点阀值
+    private double correct_ih[];//输入层的隐含层的调整值
+    private double correct_ho[];//隐含层和输出层的调整值
+    private double yd[];
     double rate_w; //权值学习率（输入层-隐含层)
     double rate_w1; //权值学习率 (隐含层-输出层)
     double rate_b1; //隐含层阀值学习率
